@@ -1,6 +1,5 @@
 # Industrial Scale Data Poisoning via Gradient Matching
 
-
 This framework implements data poisoning through gradient matching, a strategy that reliably apply imperceptible adversarial patterns to training data. If this training data is later used to train an entirely new model, this new model will misclassify specific target images. 
 The framework was written by [Liam Fowl](https://github.com/lhfowl) and me.
 
@@ -12,8 +11,10 @@ You can find our preprint at: https://arxiv.org/abs/2009.02276
 #### Abstract:
 Data Poisoning attacks involve an attacker modifying training data to maliciously control a model trained on this data.  Previous poisoning attacks against deepneural networks have been limited in scope and success, working only in simplifiedsettings or being prohibitively expensive for large datasets.   In this work,  wefocus on a particularly malicious poisoning attack that is both "from scratch" and"clean label", meaning we analyze an attack that successfully works against new,randomly initialized models, and is nearly imperceptible to humans, all whileperturbing only a small fraction of the training data. The central mechanism of thisattack is matching the gradient direction of malicious examples. We analyze whythis works, supplement with practical considerations. and show its threat to real-world practitioners, finding that it is the first poisoning method to cause targetedmisclassification in modern deep networks trained from scratch on a full-sized,poisoned ImageNet dataset.  Finally we demonstrate the limitations of existingdefensive strategies against such an attack, concluding that data poisoning is acredible threat, even for large-scale deep learning systems.
 
-
 ### Dependencies:
+
+*A: palearn 已满足前三条要求，第四条等待服务器开放后更新*
+
 * PyTorch => 1.6.*
 * torchvision > 0.5.*
 - efficientnet_pytorch [```pip install --upgrade efficientnet-pytorch``` only if EfficientNet is used]
@@ -22,9 +23,13 @@ Data Poisoning attacks involve an attacker modifying training data to maliciousl
 
 ## USAGE:
 
+*A：不知道干啥就跑brew_poison.py*
+
 The cmd-line script ```brew_poison.py``` can be run with default parameters to get a first impression for a ResNet18 on CIFAR10.
 
 ### ImageNet Example
+*A：需要下载Imgnet到服务器*
+
 To poison ImageNet for a ResNet34 with epsilon bound 8, changing 0.1% of the full training dataset, use
 ```python brew_poison.py --net ResNet34 --eps 8 --budget 0.001 --pretrained --dataset ImageNet --data_path /your/path/to/ImageNet --pbatch 128 ```
 
@@ -45,6 +50,8 @@ We also implement some related methods, aside from Gradient Matching.
 * Poison Frogs https://arxiv.org/abs/1804.00792
 * MetaPoison https://arxiv.org/abs/2004.00225 [only for the case of an ensemble of 1, refer to https://github.com/wronnyhuang/metapoison for efficient code for large ensembles]
 
+*A：注意！此代码仓库中包含了多种攻击方式，可以通过修改参数来执行不同攻击*
+
 A method can be chosen by changing ```--recipe```: Choose the poison strategy from ```gradient-matching```, ```gradient-matching-private```, ```poison-frogs```, ```watermark``` and ```metapoison```.
 
 All possible arguments can be found under ```forest/options.py```.
@@ -56,12 +63,13 @@ This framework implements an interface into several dataloaders and dataset subs
 The training procedure is implemented in the ```Victim``` class and its subclasses implement different backends.
 The ```Witch``` classes implement a poison attack for a given victim and kettle and return ```poison_delta```.
 
-A point to note: ```poison_delta``` stores only the adversarial pattern, not the image. These patterns are added to their
-corresponding images when necessary according to the ```poison_ids``` stored in the kettle.
+*A：只储存对抗模式，不存储图像*
 
+A point to note: ```poison_delta``` stores only the adversarial pattern, not the image. These patterns are added to their corresponding images when necessary according to the ```poison_ids``` stored in the kettle.
 
-To implement a new attack, have a look at the method ```_brew``` in ```witchcoven/witch_watermark``` and implement a
-similar method. Then register a new class in the ```witchcoven/__init__``` interface. Attacks that are conceptually similar to Poison Frogs or Gradient Matching can also implement a different ```_define_objective``` method and inherit the ```_brew``` structure from the base class.
+*A：使用init以注册对新类型的攻击*
+
+To implement a new attack, have a look at the method ```_brew``` in ```witchcoven/witch_watermark``` and implement a similar method. Then register a new class in the ```witchcoven/__init__``` interface. Attacks that are conceptually similar to Poison Frogs or Gradient Matching can also implement a different ```_define_objective``` method and inherit the ```_brew``` structure from the base class.
 
 
 ## Poisoning Benchmark
@@ -105,6 +113,8 @@ See https://github.com/pytorch/pytorch/blob/master/torch/distributed/launch.py f
 
 ## Randomization
 
+*A：注意每次执行攻击都会随机选择新参数，这种随机会导致一些分析非常困难*
+
 Poisoning is highly dependent on the choice of target class, source class and poisoned images. Rerunning the ```brew_poison.py``` script draws a random target image from a random class and random poison images from another class every time it is called. This might lead to very different results, as there are very easy and very hard examples.
 
 To control against this effect take note of the hash printed during the initalization of the kettle. Starting a new run with the optional argument ```--poisonkey``` will rerun the same experiment with the same setup.
@@ -124,6 +134,8 @@ python brew_poison.py --vruns 8 --poisonkey 2111111100
 python brew_poison.py --vruns 8 --poisonkey 2111111110
 python brew_poison.py --vruns 8 --poisonkey 2111111111
 ```
+
+*A：仅用--poisonkey不足以控制所有随机量*
 
 Weaker poisoning strategies are also very volatile w.r.t to model parameters. Running the validation several times with new victim model initializations helps to control for this effect. This can be done by adding the argument ```--vruns```.
 The model initialization can be fixed with ```--modelkey```, but as training is not set to be deterministic, small changes can materialize even when training from the same initialization. You can use ```--deterministic``` to switch cuDNN into its deterministic mode.
