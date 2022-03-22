@@ -1,4 +1,6 @@
 """Definition for multiple victims that can run concurrently."""
+"""A: 这好像是个分布式受害模型的代码，优先看懂single"""
+"""A：注意！！！所有Victim在定义时可能存在类继承，需要对父类有了解"""
 
 import torch
 import numpy as np
@@ -20,11 +22,13 @@ class _VictimDistributed(_VictimSingle):
     """
 
     """ Methods to initialize a model."""
+
     def __init__(self, args, defs, setup=dict(device=torch.device('cpu'), dtype=torch.float)):
         """Initialize empty victim."""
         # 载入参数，定义，初始化设定等
         self.args, self.defs, self.setup = args, defs, setup
 
+        # A: 分布式学习设定，暂时不用管
         self.rank = torch.distributed.get_rank()
         self.world_size = torch.distributed.get_world_size()
         if self.args.world_size < len(self.args.net):
@@ -32,13 +36,14 @@ class _VictimDistributed(_VictimSingle):
                              f'Launch more instances or reduce models.')
         if self.args.ensemble > 1:
             if self.args.ensemble != self.args.world_size:
-                raise ValueError('The ensemble option is disregarded in distributed mode. One model will be launched per instance.')
-
+                raise ValueError('The ensemble option is disregarded in distributed mode. One model will be launched '
+                                 'per instance.')
+        # A：直到这里
 
     def initialize(self, seed=None):
         if self.args.modelkey is None:
             if seed is None:
-                init_seed = torch.randint(0, 2**32 - 128, [1], device=self.setup['device'])
+                init_seed = torch.randint(0, 2 ** 32 - 128, [1], device=self.setup['device'])
             else:
                 init_seed = torch.as_tensor(seed, dtype=torch.int64, device=self.setup['device'])
         else:
@@ -51,7 +56,6 @@ class _VictimDistributed(_VictimSingle):
         self.model, self.defs, self.criterion, self.optimizer, self.scheduler = self._initialize_model(model_name)
         self.model.to(**self.setup)
         print(f'Model {model_name} initialized with random key {self.model_init_seed} on rank {self.rank}.')
-
 
     """ METHODS FOR (CLEAN) TRAINING AND TESTING OF BREWED POISONS"""
 
@@ -94,7 +98,6 @@ class _VictimDistributed(_VictimSingle):
             for idx, item in enumerate(stats):
                 stats[item] = average_stats[:, idx].tolist()
             return stats
-
 
     """ Various Utilities."""
 
