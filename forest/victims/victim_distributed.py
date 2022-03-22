@@ -22,6 +22,7 @@ class _VictimDistributed(_VictimSingle):
     """ Methods to initialize a model."""
     def __init__(self, args, defs, setup=dict(device=torch.device('cpu'), dtype=torch.float)):
         """Initialize empty victim."""
+        # 载入参数，定义，初始化设定等
         self.args, self.defs, self.setup = args, defs, setup
 
         self.rank = torch.distributed.get_rank()
