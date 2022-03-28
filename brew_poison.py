@@ -20,6 +20,7 @@ if __name__ == "__main__":
 
     setup = forest.utils.system_startup(args)
 
+    """T:对被投毒对象、数据集、投毒攻击进行初始化"""
     model = forest.Victim(args, setup=setup)
     data = forest.Kettle(args, model.defs.batch_size, model.defs.augmentations, setup=setup)
     witch = forest.Witch(args, setup=setup)
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     else:
         stats_clean = model.train(data, max_epoch=args.max_epoch)
     train_time = time.time()
-
+    """T：获取投毒攻击"""
     poison_delta = witch.brew(model, data)
     brew_time = time.time()
 

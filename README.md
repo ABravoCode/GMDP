@@ -34,7 +34,7 @@ To poison ImageNet for a ResNet34 with epsilon bound 8, changing 0.1% of the ful
 ```python brew_poison.py --net ResNet34 --eps 8 --budget 0.001 --pretrained --dataset ImageNet --data_path /your/path/to/ImageNet --pbatch 128 ```
 
 ### Cmd-Line Interface Usage:
-
+T：重要参数及其意义：
 The cmd-script features a ton of arguments, most of which are very optional. Important parameters are:
 * ```--net```: Choose the neural network that is being poisoned. Current options:
     - *CIFAR/MNIST*: ```ResNet-``` variants including WideResNets via ```ResNet-DEPTH-WIDTH```, ```MobileNetV2```, a ```ConvNet```, ```Linear```, ```VGG``` variants
@@ -51,13 +51,17 @@ We also implement some related methods, aside from Gradient Matching.
 * MetaPoison https://arxiv.org/abs/2004.00225 [only for the case of an ensemble of 1, refer to https://github.com/wronnyhuang/metapoison for efficient code for large ensembles]
 
 *A：注意！此代码仓库中包含了多种攻击方式，可以通过修改参数来执行不同攻击*
-
+T：通过recipe来选择投毒策略，具体见options
 A method can be chosen by changing ```--recipe```: Choose the poison strategy from ```gradient-matching```, ```gradient-matching-private```, ```poison-frogs```, ```watermark``` and ```metapoison```.
 
 All possible arguments can be found under ```forest/options.py```.
 
 
 ## Framework Basics:
+T：框架：
+Kettle存储数据且作为接口
+Victim用于训练过程
+Witch针对特定的被攻击者与数据进行攻击，并返回毒物，但返回文件并不是返回图片，而是返回投毒方式，投毒方式与kettle中对应的图片结合才是毒物
 
 This framework implements an interface into several dataloaders and dataset subsets in the ```Kettle``` class.
 The training procedure is implemented in the ```Victim``` class and its subclasses implement different backends.
