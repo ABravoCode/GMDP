@@ -4,13 +4,17 @@
 
 ## 当前周(week6)进度目标
 
-forest文件夹代码
+metapoison论文 (多步SGD) [Aya已完成]
 
-metapoison论文
+forest文件夹代码
 
 > 百行注释情况
 >
 > Jeremy: 0/100
+
+> 其他工作：
+>
+> temp
 
 
 
