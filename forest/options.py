@@ -97,6 +97,7 @@ def options():
     parser.add_argument('--repel', default=0, type=float)
 
     # Specific Options for a metalearning recipe
+    # A: Metapoison参数，**第二项**可能与ZO-AdaMM会有关系
     parser.add_argument('--nadapt', default=2, type=int, help='Meta unrolling steps')
     parser.add_argument('--clean_grad', action='store_true', help='Compute the first-order poison gradient.')
 
@@ -117,6 +118,7 @@ def options():
     # Strategy overrides:
     parser.add_argument('--epochs', default=None, type=int)
     parser.add_argument('--noaugment', action='store_true', help='Do not use data augmentation during training.')
+    # A: 梯度噪声或是修剪(随机干扰)
     parser.add_argument('--gradient_noise', default=None, type=float, help='Add custom gradient noise during training.')
     parser.add_argument('--gradient_clip', default=None, type=float, help='Add custom gradient clip during training.')
 
@@ -126,6 +128,7 @@ def options():
 
     # These options allow for testing against the toxicity benchmark found at
     # https://github.com/aks2203/poisoning-benchmark
+    # A: 标准性能测试选项
     parser.add_argument('--benchmark', default='', type=str, help='Path to benchmarking setup (pickle file)')
     parser.add_argument('--benchmark_idx', default=0, type=int, help='Index of benchmark test')
 
