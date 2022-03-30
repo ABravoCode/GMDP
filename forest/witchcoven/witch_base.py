@@ -192,7 +192,7 @@ class _Witch():
         return poison_delta, target_losses
 
 
-
+    #选取最小化目标损失的一步大小
     def _batched_step(self, poison_delta, poison_bounds, example, victim, kettle):
         """Take a step toward minmizing the current target loss."""
         inputs, labels, ids = example

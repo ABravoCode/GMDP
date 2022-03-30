@@ -31,6 +31,7 @@ class WitchBullsEye(_Witch):
             outputs_targets = feature_model(targets)
             prediction = (last_layer(outputs).data.argmax(dim=1) == labels).sum()
 
+            #T: 用均值替代和
             feature_loss = (outputs.mean(dim=0) - outputs_targets.mean(dim=0)).pow(2).mean()
             feature_loss.backward(retain_graph=self.retain)
             return feature_loss.detach().cpu(), prediction.detach().cpu()
