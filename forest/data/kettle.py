@@ -64,12 +64,14 @@ class Kettle():
         if self.args.poisonkey is None:
             if self.args.benchmark != '':
                 with open(self.args.benchmark, 'rb') as handle:
+                    # A: 加载标准测试数据
                     setup_dict = pickle.load(handle)
                 self.benchmark_construction(setup_dict[self.args.benchmark_idx])  # using the first setup dict for benchmarking
             else:
                 self.random_construction()
 
 
+        # A: 如果没有poisonkey(key设置)
         else:
             if '-' in self.args.poisonkey:
                 # If the poisonkey contains a dash-separated triplet like 5-3-1, then poisons are drawn
@@ -88,11 +90,13 @@ class Kettle():
         self.validloader = torch.utils.data.DataLoader(self.validset, batch_size=min(self.batch_size, len(self.validset)),
                                                        shuffle=False, drop_last=False, num_workers=num_workers, pin_memory=PIN_MEMORY)
         validated_batch_size = max(min(args.pbatch, len(self.poisonset)), 1)
+        # A: 毒物集与测试集分开
         self.poisonloader = torch.utils.data.DataLoader(self.poisonset, batch_size=validated_batch_size,
                                                         shuffle=self.args.pshuffle, drop_last=False, num_workers=num_workers,
                                                         pin_memory=PIN_MEMORY)
 
         # Ablation on a subset?
+        # A: 分割数据集以用于消融实验
         if args.ablation < 1.0:
             self.sample = random.sample(range(len(self.trainset)), int(self.args.ablation * len(self.trainset)))
             self.partialset = Subset(self.trainset, self.sample)
@@ -170,6 +174,7 @@ class Kettle():
 
         return trainset, validset
 
+    # A: 此函数可以使给定参数产生的输入完全相同
     def deterministic_construction(self):
         """Construct according to the triplet input key.
 

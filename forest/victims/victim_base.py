@@ -104,6 +104,8 @@ class _VictimBase:
         """Switch everything into evaluation mode."""
         raise NotImplementedError()
 
+    # A:[已解决] 这么多函数调用了这个这函数就raise个错??
+    # 技术博客: https://www.cnblogs.com/everfight/p/NotImplementedError.html 
     def _iterate(self, kettle, poison_delta):
         """Validate a given poison by training the model and checking target accuracy."""
         raise NotImplementedError()

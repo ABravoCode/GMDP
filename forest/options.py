@@ -51,8 +51,8 @@ def options():
 
     # Poison brewing:
     """
-    攻击时采用的优化器
-    注意！在未来的工作中此处应改为ZO-AdaMM
+    A: 攻击时采用的优化器
+    注意!在未来的工作中此处应改为ZO-AdaMM
     阅读代码时请除功能外尤其注意attackoptim的通信机制与接口
     """
     parser.add_argument('--attackoptim', default='signAdam', type=str)
@@ -123,6 +123,7 @@ def options():
     parser.add_argument('--gradient_clip', default=None, type=float, help='Add custom gradient clip during training.')
 
     # Optionally, datasets can be stored as LMDB or within RAM:
+    # A: LMDB用于提高性能。整个数据库在内存映射中公开，所有数据获取都直接从映射的内存返回数据，因此在数据获取期间不会出现malloc或memcpy。
     parser.add_argument('--lmdb_path', default=None, type=str)
     parser.add_argument('--cache_dataset', action='store_true', help='Cache the entire thing :>')
 

@@ -12,6 +12,8 @@ torch.multiprocessing.set_sharing_strategy(forest.consts.SHARING_STRATEGY)
 # Parse input arguments
 args = forest.options().parse_args()
 # 100% reproducibility?
+# A: ./forest/options.py中的参数, 是否使用CUDNN中的可复现功能(choose seed)
+# 关于此技术，可参考博客-https://vimsky.com/examples/detail/python-method-torch.backends.cudnn.deterministic.html
 if args.deterministic:
     forest.utils.set_deterministic()
 
@@ -20,19 +22,24 @@ if __name__ == "__main__":
 
     setup = forest.utils.system_startup(args)
 
-    """T:对被投毒对象、数据集、投毒攻击进行初始化"""
+    # T: 对被投毒对象、数据集、投毒攻击进行初始化
+    # A: model初始化时, 主要关注于毒物生成时是否集成多种模型与分布式选项
     model = forest.Victim(args, setup=setup)
     data = forest.Kettle(args, model.defs.batch_size, model.defs.augmentations, setup=setup)
+    # A: 选择投毒方式对象
     witch = forest.Witch(args, setup=setup)
 
+    # A: 使用stats_clean变量可
     start_time = time.time()
     if args.pretrained:
         print('Loading pretrained model...')
         stats_clean = None
     else:
+        # A: ./forest/victims/victim_base.py -> def train...*有问题*
         stats_clean = model.train(data, max_epoch=args.max_epoch)
     train_time = time.time()
-    """T:获取投毒攻击"""
+
+    # T:获取投毒攻击
     poison_delta = witch.brew(model, data)
     brew_time = time.time()
 
