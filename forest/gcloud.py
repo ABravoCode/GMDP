@@ -5,6 +5,7 @@ This is the autoML interface.
 
 Replace THISISYOURSERVICEACCOUNT.json in line 40 with your service account credentials.
 """
+# A: 谷歌autoML的接口，最后再回来看。
 
 
 

@@ -1,4 +1,5 @@
 """Setup constants, ymmv."""
+# A: 都是归一化值
 
 PIN_MEMORY = True
 NON_BLOCKING = True

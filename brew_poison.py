@@ -32,7 +32,7 @@ if __name__ == "__main__":
     else:
         stats_clean = model.train(data, max_epoch=args.max_epoch)
     train_time = time.time()
-    """T：获取投毒攻击"""
+    """T:获取投毒攻击"""
     poison_delta = witch.brew(model, data)
     brew_time = time.time()
 
