@@ -35,7 +35,7 @@ if __name__ == "__main__":
         print('Loading pretrained model...')
         stats_clean = None
     else:
-        # A: ./forest/victims/victim_base.py -> def train...*有问题*
+        # A: ./forest/victims/victim_base.py -> def train... ->victim_single.py -> def iterate...
         stats_clean = model.train(data, max_epoch=args.max_epoch)
     train_time = time.time()
 
@@ -65,6 +65,7 @@ if __name__ == "__main__":
     test_time = time.time()
 
 
+    # A: 时间戳保存并展示
     timestamps = dict(train_time=str(datetime.timedelta(seconds=train_time - start_time)).replace(',', ''),
                       brew_time=str(datetime.timedelta(seconds=brew_time - train_time)).replace(',', ''),
                       test_time=str(datetime.timedelta(seconds=test_time - brew_time)).replace(',', ''))

@@ -31,8 +31,9 @@ class _Witch():
         self.retain = True if self.args.ensemble > 1 and self.args.local_rank is None else False
         self.stat_optimal_loss = None
 
+
     """ BREWING RECIPES """
-    """T:检测各个元素是否为空，空则报警,不空则投毒"""
+    """T: 检测各个元素是否为空，空则报警,不空则投毒"""
     def brew(self, victim, kettle):
         """Recipe interface."""
         if len(kettle.poisonset) > 0:
@@ -55,7 +56,7 @@ class _Witch():
 
         return poison_delta
 
-    """T： 根据给的初始条件进行训练产生毒物"""
+    """T: 根据给的初始条件进行训练产生毒物"""
     def _brew(self, victim, kettle):
         """Run generalized iterative routine."""
         print(f'Starting brewing procedure ...')
