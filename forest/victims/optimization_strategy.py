@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 BRITTLE_NETS = ['convnet', 'mobilenet', 'vgg', 'alexnet']  # handled with lower learning rate
 
+# A: defs定义
 def training_strategy(model_name, args):
     """Parse training strategy."""
     if args.optimization == 'conservative':
@@ -54,7 +55,8 @@ class ConservativeStrategy(Strategy):
         """Initialize training hyperparameters."""
         self.lr = 0.1
         self.epochs = 40
-        self.batch_size = 128
+        # A: 已修改size, default=128
+        self.batch_size = 32
         self.optimizer = 'SGD'
         self.scheduler = 'linear'
         self.weight_decay = 5e-4

@@ -29,7 +29,7 @@ if __name__ == "__main__":
     # A: 选择投毒方式对象
     witch = forest.Witch(args, setup=setup)
 
-    # A: 使用stats_clean变量可
+    # A: 使用stats_clean变量可进行类似存档读档操作
     start_time = time.time()
     if args.pretrained:
         print('Loading pretrained model...')
