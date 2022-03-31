@@ -1,0 +1,22 @@
+问题描述:Commit 70146ea2@20220331 11:42 看看那个版本的注释
+
+Console:
+(MachineLearning) jeremy@JeremydeMacBook-Pro demo % python brew_poison.py  --net ResNet18 --vruns 8 --poisonkey 2000000000 --budget 0.01 --restarts 8 --ensemble 1 --name ablation_no_aug_no_aug --paugment --noaugment --pbatch 32
+
+Currently evaluating -------------------------------:
+Thursday, 31. March 2022 11:39AM
+Namespace(net=['ResNet18'], dataset='CIFAR10', recipe='gradient-matching', threatmodel='single-class', poisonkey='2000000000', modelkey=None, deterministic=False, eps=16, budget=0.01, targets=1, name='ablation_no_aug_no_aug', table_path='tables/', poison_path='poisons/', data_path='~/data', attackoptim='signAdam', attackiter=250, init='randn', tau=0.1, scheduling=True, target_criterion='cross-entropy', restarts=8, pbatch=32, pshuffle=False, paugment=False, data_aug='default', full_data=False, adversarial=0, ensemble=1, stagger=False, step=False, max_epoch=None, ablation=1.0, loss='similarity', centreg=0, normreg=0, repel=0, nadapt=2, clean_grad=False, vruns=8, vnet=None, retrain_from_init=False, pretrained=False, optimization='conservative', epochs=None, noaugment=True, gradient_noise=None, gradient_clip=None, lmdb_path=None, cache_dataset=False, benchmark='', benchmark_idx=0, dryrun=False, save=None, local_rank=None)
+CPUs: 8, GPUs: 0 on JeremydeMacBook-Pro.local.
+ResNet18 model initialized with random key 3567059339.
+Files already downloaded and verified
+Data mean is [0.4914672374725342, 0.4822617471218109, 0.4467701315879822], 
+Data std  is [0.24703224003314972, 0.24348513782024384, 0.26158785820007324].
+Files already downloaded and verified
+Traceback (most recent call last):
+  File "/Users/jeremy/Desktop/GMDP/demo/brew_poison.py", line 28, in <module>
+    data = forest.Kettle(args, model.defs.batch_size, model.defs.augmentations, setup=setup)
+  File "/Users/jeremy/Desktop/GMDP/demo/forest/data/kettle.py", line 51, in __init__
+    self.trainset, self.validset = self.prepare_data(normalize=True)
+  File "/Users/jeremy/Desktop/GMDP/demo/forest/data/kettle.py", line 169, in prepare_data
+    elif not self.defs.augmentations:
+AttributeError: 'Kettle' object has no attribute 'defs'
