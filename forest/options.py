@@ -68,11 +68,13 @@ def options():
     #T: 初始化采用随机初始化
     parser.add_argument('--init', default='randn', type=str)  # randn / rand
     parser.add_argument('--tau', default=0.1, type=float)
+    #T: 设置只允许前进
     parser.add_argument('--scheduling', action='store_false', help='Disable step size decay.')
     # A: 使用交叉熵作为loss函数
     parser.add_argument('--target_criterion', default='cross-entropy', type=str, help='Loss criterion for target loss')
+    #T: 重新攻击的频率
     parser.add_argument('--restarts', default=8, type=int, help='How often to restart the attack.')
-
+    #T: 每组大小为512
     parser.add_argument('--pbatch', default=512, type=int, help='Poison batch size during optimization')
     # A: 是否打乱数据顺序
     parser.add_argument('--pshuffle', action='store_true', help='Shuffle poison batch during optimization')
@@ -91,6 +93,7 @@ def options():
 
     # Use only a subset of the dataset:
     # A: 用多少数据
+    #T: 用1%包含毒物的数据作为验证集
     parser.add_argument('--ablation', default=1.0, type=float,
                         help='What percent of data (including poisons) to use for validation')
 
@@ -117,12 +120,15 @@ def options():
     parser.add_argument('--vnet', default=None, type=lambda s: [str(item) for item in s.split(',')],
                         help='Evaluate poison on this victim model. Defaults to --net')
     # A: 是否载入Check_point
+    #T: 通过重新训练初始化模型来进行对比评估投毒效果
     parser.add_argument('--retrain_from_init', action='store_true',
                         help='Additionally evaluate by retraining on the same model initialization.')
 
     # Optimization setup
+    #T: 载入预先训练好的模型
     parser.add_argument('--pretrained', action='store_true',
                         help='Load pretrained models from torchvision, if possible [only valid for ImageNet].')
+    #T: 优化策略
     parser.add_argument('--optimization', default='conservative', type=str, help='Optimization Strategy')
     # Strategy overrides:
     parser.add_argument('--epochs', default=None, type=int)
@@ -144,6 +150,7 @@ def options():
 
     # Debugging:
     parser.add_argument('--dryrun', action='store_true')
+    #T: 将结果按选择格式输出
     parser.add_argument('--save', default=None,
                         help='Export poisons into a given format. Options are full/limited/automl/numpy.')
 
