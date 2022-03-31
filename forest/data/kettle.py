@@ -166,6 +166,7 @@ class Kettle():
 
             if self.augmentations == 'default':
                 self.augment = RandomTransform(**params, mode='bilinear')
+            # A: kettle对象没有defs属性, 但是optimization_strategy.py文件里有相关定义, 是否有联系?
             elif not self.defs.augmentations:
                 print('Data augmentations are disabled.')
                 self.augment = RandomTransform(**params, mode='bilinear')
