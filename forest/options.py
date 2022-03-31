@@ -15,15 +15,19 @@ def options():
     ###########################################################################
     # Central:
     # A: 网络结构选择，可用列表输入
+    #T: （貌似只是设定？不是选择？）
     parser.add_argument('--net', default='ResNet18', type=lambda s: [str(item) for item in s.split(',')])
     # A: 只支持choices里等各种数据集
+    #T：与论文一致，默认数据集为CIFAR10
     parser.add_argument('--dataset', default='CIFAR10', type=str,
                         choices=['CIFAR10', 'CIFAR100', 'ImageNet', 'ImageNet1k', 'MNIST', 'TinyImageNet'])
     # A: 不同投毒方式，metapoison的方式自己看
+    #T: 投毒方式，默认为WB（到时候要改？）
     parser.add_argument('--recipe', default='gradient-matching', type=str,
                         choices=['gradient-matching', 'gradient-matching-private',
                                  'watermarking', 'poison-frogs', 'metapoison', 'bullseye'])
     # A: 投毒目标
+    #T: 投毒模型选择，默认为single-class
     parser.add_argument('--threatmodel', default='single-class', type=str,
                         choices=['single-class', 'third-party', 'random-subset'])
 
@@ -36,12 +40,14 @@ def options():
 
     # Poison properties / controlling the strength of the attack:
     # A: Lp范数扰动: epsilon, delta与目标个数
+    #T: Lp范数设定为16；最多可将1%数据集里面的数据变为毒物；目标个数为1个
     parser.add_argument('--eps', default=16, type=float)
     parser.add_argument('--budget', default=0.01, type=float, help='Fraction of training data that is poisoned')
     parser.add_argument('--targets', default=1, type=int, help='Number of targets')
 
     # Files and folders
     # A: 文件IO目录
+    #T: 文件中存储结果
     parser.add_argument('--name', default='', type=str,
                         help='Name tag for the result table and possibly for export folders.')
     parser.add_argument('--table_path', default='tables/', type=str)
@@ -55,8 +61,11 @@ def options():
     注意!在未来的工作中此处应改为ZO-AdaMM
     阅读代码时请除功能外尤其注意attackoptim的通信机制与接口
     """
+    #T: 采用signAdam作为攻击方式
     parser.add_argument('--attackoptim', default='signAdam', type=str)
+    #T: 攻击次数为250次（？）
     parser.add_argument('--attackiter', default=250, type=int)
+    #T: 初始化采用随机初始化
     parser.add_argument('--init', default='randn', type=str)  # randn / rand
     parser.add_argument('--tau', default=0.1, type=float)
     parser.add_argument('--scheduling', action='store_false', help='Disable step size decay.')
