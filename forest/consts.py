@@ -5,7 +5,10 @@ PIN_MEMORY = True
 NON_BLOCKING = True
 BENCHMARK = True
 MAX_THREADING = 40
-SHARING_STRATEGY = 'file_descriptor'  # file_system or file_descriptor
+
+# A: [为啥呢?]这个貌似要改了才能用, 文档:https://pytorch-cn.readthedocs.io/zh/latest/package_references/torch-multiprocessing/
+# SHARING_STRATEGY = 'file_descriptor'  # file_system or file_descriptor
+SHARING_STRATEGY = 'file_system'
 
 DEBUG_TRAINING = False
 
