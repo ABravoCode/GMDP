@@ -93,7 +93,7 @@ def options():
 
     # Use only a subset of the dataset:
     # A: 用多少数据
-    #T: 用1%包含毒物的数据作为验证集
+    #T: 用1%包含毒物的数据作为验证集<A:消融实验不是验证,GOOGLE一下>
     parser.add_argument('--ablation', default=1.0, type=float,
                         help='What percent of data (including poisons) to use for validation')
 
