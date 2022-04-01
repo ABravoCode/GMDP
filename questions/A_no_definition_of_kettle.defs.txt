@@ -1,4 +1,4 @@
-问题描述:Commit 70146ea2@20220331 11:42 看看那个版本的注释
+问题描述:Commit 70146ea2 @20220331 11:42 看看那个版本的第169行注释
 
 Console:
 (MachineLearning) jeremy@JeremydeMacBook-Pro demo % python brew_poison.py  --net ResNet18 --vruns 8 --poisonkey 2000000000 --budget 0.01 --restarts 8 --ensemble 1 --name ablation_no_aug_no_aug --paugment --noaugment --pbatch 32
