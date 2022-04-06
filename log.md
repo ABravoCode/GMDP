@@ -2,23 +2,17 @@
 
 [TOC]
 
-## 当前周(week6)进度目标
+## 当前周(week7)进度目标
 
 metapoison论文 (多步SGD) [Aya已完成]
 
-forest文件夹代码
+跑代码<font color=red>**提问题**</font> 不知道用什么指令可以看./paper_experiments/*
 
-> 百行注释情况
->
-> Jeremy: 36/100
->
-> Kevin: 28/100
->
-> HHJ: 0/100 <A: 人呢!>
+可以结合options.py修改合适的参数以便于本地运行
 
-> 其他工作：
->
-> 
+*代码跑不起来的问题也可以提*
+
+问题往quesion文件夹里塞 记得描述清楚问题 提交就写Update Questions就好
 
 
 
@@ -30,7 +24,7 @@ wangchen老师服务器环境搭建(查不到显卡!)
 
 ## 已完成
 
-干净标签投毒攻击论文阅读: FC, CP, BP, WB
+干净标签投毒攻击论文精读: FC, CP, BP, WB
 
 优化论文阅读: ZO-AdaMM
 
@@ -70,4 +64,10 @@ PengKai老师服务器环境搭建
 ​	*1 Fri*
 
 ​		A: 更新注释
-		T：metapoison论文阅读（部分）
+​		T：metapoison论文阅读（部分）
+
+​	*6 Wed*
+
+​		A: 收假了 决心不要划水了。。
+
+​		
