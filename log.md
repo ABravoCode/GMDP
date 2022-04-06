@@ -6,7 +6,7 @@
 
 metapoison论文 (多步SGD) [Aya已完成]
 
-跑代码<font color=red>**提问题**</font> 不知道用什么指令可以看./paper_experiments/*
+跑代码<font color=red>**提问题**</font> 不知道用什么指令可以看./paper_experiments/*或./Examplars
 
 可以结合options.py修改合适的参数以便于本地运行
 
@@ -70,6 +70,6 @@ PengKai老师服务器环境搭建
 
 ​	*6 Wed*
 
-​		A: 收假了 决心不要划水了。。解决问题1
+​		A: 收假了 决心不要划水了。。解决问题；购买并配置服务器；跑实验忘记保存poison了，紫砂了
 
 ​		
