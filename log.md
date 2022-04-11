@@ -2,7 +2,7 @@
 
 [TOC]
 
-## 当前周(week7)进度目标
+## 当前周(week8)进度目标
 
 metapoison论文 (多步SGD) [Aya已完成]
 
@@ -14,13 +14,13 @@ metapoison论文 (多步SGD) [Aya已完成]
 
 问题往quesion文件夹里塞 记得描述清楚问题 提交就写Update Questions就好
 
-**合理设定参数，小心电脑着火**
+服务器使用
 
 
 
 ## 待办事项
 
-wangchen老师服务器环境搭建(查不到显卡!)
+<font color=grey>wangchen老师服务器环境搭建(查不到显卡!)</font>
 
 
 
