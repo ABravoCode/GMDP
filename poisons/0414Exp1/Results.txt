@@ -1,0 +1,13 @@
+Epoch: 39 | lr: 0.0001 | Training    loss is  0.0630, train acc:  97.99% | Validation   loss is  0.2524, valid acc:  92.13% |
+Epoch: 39 | lr: 0.0001 | Target adv. loss is  0.0006, fool  acc: 100.00% | Target orig. loss is  7.5809, orig. acc:   0.00% |
+
+Results saved to tables/table_ResNet18_single-classablation_no_aug_no_aug.csv.
+Poisoned training images exported ...
+Target images exported with intended class labels ...
+Dataset fully exported.
+Thursday, 14. April 2022 01:00PM
+---------------------------------------------------
+Finished computations with train time: 0:25:15.020287
+--------------------------- brew time: 0:02:01.302725
+--------------------------- test time: 0:24:42.421796
+-------------Job finished.-------------------------
