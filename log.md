@@ -8,9 +8,7 @@
 
 
 
-## 当前周(week8)进度目标
-
-metapoison论文 (多步SGD) [Aya已完成]
+## 当前周(week9)进度目标
 
 跑代码<font color=red>**提问题**</font> 不知道用什么指令可以看./paper_experiments/*或./Examplars
 
@@ -20,7 +18,11 @@ metapoison论文 (多步SGD) [Aya已完成]
 
 问题往quesion文件夹里塞 记得描述清楚问题 提交就写Update Questions就好
 
-服务器使用
+
+
+整理WB攻击代码，重心开始向优化方向偏移。
+
+CW攻击论文: https://arxiv.org/pdf/1608.04644.pdf ，略读一下。
 
 
 
@@ -101,3 +103,5 @@ PengKai老师服务器环境搭建
 ​	*15 Fri*
 
 ​		A: 实验。在100iter的情况下仅WB有成功记录。
+
+​	
