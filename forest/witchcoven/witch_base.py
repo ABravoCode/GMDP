@@ -33,7 +33,8 @@ class _Witch():
 
 
     """ BREWING RECIPES """
-    """T: 检测各个元素是否为空，空则报警,不空则投毒"""
+    # T: 检测各个元素是否为空，空则报警,不空则投毒
+    # A: 投毒基础参数是否给定
     def brew(self, victim, kettle):
         """Recipe interface."""
         if len(kettle.poisonset) > 0:
@@ -56,7 +57,7 @@ class _Witch():
 
         return poison_delta
 
-    """T: 根据给的初始条件进行训练产生毒物"""
+    # T: 根据给的初始条件进行训练产生毒物
     def _brew(self, victim, kettle):
         """Run generalized iterative routine."""
         print(f'Starting brewing procedure ...')
@@ -90,10 +91,12 @@ class _Witch():
         # Precompute target gradients
         if self.args.target_criterion in ['cw', 'carlini-wagner']:
             self.target_grad, self.target_gnorm = victim.gradient(self.targets, self.intended_classes, cw_loss)
+        # A: loss的选择不同导致正负不同 故注意loss梯度方向
         elif self.args.target_criterion in ['untargeted-cross-entropy', 'unxent']:
             self.target_grad, self.target_gnorm = victim.gradient(self.targets, self.true_classes)
             for grad in self.target_grad:
                 grad *= -1
+        # A: validiation loss
         elif self.args.target_criterion in ['xent', 'cross-entropy']:
             self.target_grad, self.target_gnorm = victim.gradient(self.targets, self.intended_classes)
         else:
@@ -109,6 +112,7 @@ class _Witch():
         # This is not super-relevant for the adam variants
         # but the PGD variants are especially sensitive
         # E.G: 92% for PGD with rule 1 and 20% for rule 2
+        # A: 归一化lr??
         if self.args.attackoptim in ['PGD', 'GD']:
             # Rule 1
             self.tau0 = self.args.eps / 255 / kettle.ds * self.args.tau * (self.args.pbatch / 512) / self.args.ensemble
@@ -169,6 +173,7 @@ class _Witch():
                 att_optimizer.zero_grad()
                 with torch.no_grad():
                     # Projection Step
+                    # A: max-min问题
                     poison_delta.data = torch.max(torch.min(poison_delta, self.args.eps /
                                                             ds / 255), -self.args.eps / ds / 255)
                     poison_delta.data = torch.max(torch.min(poison_delta, (1 - dm) / ds -
@@ -192,7 +197,7 @@ class _Witch():
         return poison_delta, target_losses
 
 
-    #选取最小化目标损失的一步大小
+    # T: 选取最小化目标损失的一步大小
     def _batched_step(self, poison_delta, poison_bounds, example, victim, kettle):
         """Take a step toward minmizing the current target loss."""
         inputs, labels, ids = example

@@ -103,7 +103,7 @@ def options():
 
     # These are additional regularization terms for gradient matching. We do not use them, but it is possible
     # that scenarios exist in which additional regularization of the poisoned data is useful.
-    # A: 论文实验里没用，但是可能在某些特殊的场景下会用到的正则化手段（先不管）
+    # A: 可能在某些特殊的场景下会用到的正则化手段(?)
     parser.add_argument('--centreg', default=0, type=float)
     parser.add_argument('--normreg', default=0, type=float)
     parser.add_argument('--repel', default=0, type=float)
