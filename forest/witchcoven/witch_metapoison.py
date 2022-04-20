@@ -37,6 +37,7 @@ class WitchMetaPoison(_Witch):
             # model.train()
             model = MetaMonkey(model)
 
+            # A: N times optim.
             for _ in range(self.args.nadapt):
                 outputs = model(inputs, model.parameters)
                 prediction = (outputs.data.argmax(dim=1) == labels).sum()
