@@ -52,7 +52,7 @@ def options():
                         help='Name tag for the result table and possibly for export folders.')
     parser.add_argument('--table_path', default='tables/', type=str)
     parser.add_argument('--poison_path', default='poisons/', type=str)
-    parser.add_argument('--data_path', default='~/data', type=str)
+    parser.add_argument('--data_path', default='./datasets', type=str)
     ###########################################################################
 
     # Poison brewing:

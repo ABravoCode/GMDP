@@ -98,6 +98,7 @@ class _VictimSingle(_VictimBase):
         """Reset scheduler object to initial state."""
         _, _, self.optimizer, self.scheduler = self._initialize_model()
 
+    # ************** Revise gradient ************** 
     def gradient(self, images, labels, criterion=None):
         """Compute the gradient of criterion(model) w.r.t to given data."""
         if criterion is None:

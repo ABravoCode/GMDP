@@ -29,6 +29,8 @@ class WitchGradientMatching(_Witch):
                 pass  # use the default for untargeted or targeted cross entropy
             poison_loss = criterion(outputs, labels)
             prediction = (outputs.data.argmax(dim=1) == labels).sum()
+
+            # ******************** Revise gradient ********************
             poison_grad = torch.autograd.grad(poison_loss, model.parameters(), retain_graph=True, create_graph=True)
 
             passenger_loss = self._passenger_loss(poison_grad, target_grad, target_clean_grad, target_gnorm)

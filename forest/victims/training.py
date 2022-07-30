@@ -170,6 +170,8 @@ def run_step(kettle, poison_delta, loss_fn, epoch, stats, model, defs, criterion
         stats['data_time'] = 0
         stats['forward_time'] = 0
         stats['backward_time'] = 0
+    
+    torch.save(model, './{}_{}_{}_model.pth'.format(kettle.args.dataset, kettle.args.net, kettle.args.optimization))
 
 
 def run_validation(model, criterion, dataloader, setup, dryrun=False):

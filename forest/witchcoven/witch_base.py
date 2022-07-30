@@ -87,7 +87,7 @@ class _Witch():
         self.intended_classes = torch.tensor(kettle.poison_setup['intended_class']).to(device=self.setup['device'], dtype=torch.long)
         self.true_classes = torch.tensor([data[1] for data in kettle.targetset]).to(device=self.setup['device'], dtype=torch.long)
 
-
+        # **************** Revise target_grad ****************
         # Precompute target gradients
         if self.args.target_criterion in ['cw', 'carlini-wagner']:
             self.target_grad, self.target_gnorm = victim.gradient(self.targets, self.intended_classes, cw_loss)
@@ -103,6 +103,7 @@ class _Witch():
             raise ValueError('Invalid target criterion chosen ...')
         print(f'Target Grad Norm is {self.target_gnorm}')
 
+        # ************** Revise target_grad ***************
         if self.args.repel != 0:
             self.target_clean_grad, _ = victim.gradient(self.targets, self.true_classes)
         else:
