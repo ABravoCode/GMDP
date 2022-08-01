@@ -38,6 +38,7 @@ if __name__ == "__main__":
         # A: ./forest/victims/victim_base.py -> def train... ->victim_single.py -> def iterate...
         stats_clean = model.train(data, max_epoch=args.max_epoch)
     train_time = time.time()
+    torch.save(model, './{}_{}_{}_clean_model.pth'.format(args.dataset, args.net[2:-2], args.optimization))
 
     # T:获取投毒攻击
     poison_delta = witch.brew(model, data)
