@@ -90,22 +90,22 @@ class _Witch():
         # **************** Revise target_grad ****************
         # Precompute target gradients
         if self.args.target_criterion in ['cw', 'carlini-wagner']:
-            self.target_grad, self.target_gnorm = victim.gradient(self.targets, self.intended_classes, cw_loss)
+            self.target_grad, self.target_gnorm = victim.gradient(victim.model, self.targets, self.intended_classes, cw_loss)
         # A: loss的选择不同导致正负不同 故注意loss梯度方向
         elif self.args.target_criterion in ['untargeted-cross-entropy', 'unxent']:
-            self.target_grad, self.target_gnorm = victim.gradient(self.targets, self.true_classes)
+            self.target_grad, self.target_gnorm = victim.gradient(victim.model, self.targets, self.true_classes)
             for grad in self.target_grad:
                 grad *= -1
         # A: validiation loss
         elif self.args.target_criterion in ['xent', 'cross-entropy']:
-            self.target_grad, self.target_gnorm = victim.gradient(self.targets, self.intended_classes)
+            self.target_grad, self.target_gnorm = victim.gradient(victim.model, self.targets, self.intended_classes)
         else:
             raise ValueError('Invalid target criterion chosen ...')
         print(f'Target Grad Norm is {self.target_gnorm}')
 
         # ************** Revise target_grad ***************
         if self.args.repel != 0:
-            self.target_clean_grad, _ = victim.gradient(self.targets, self.true_classes)
+            self.target_clean_grad, _ = victim.gradient(victim.model, self.targets, self.true_classes)
         else:
             self.target_clean_grad = None
 

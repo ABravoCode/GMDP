@@ -57,32 +57,22 @@ def model_prediction(model, inputs):
     return prob, predicted_class
 
 
-def calculate_similarity(mod='CIFAR10', img_id=0):
+def est_grad(model, img_id=0):
     # config for gradient estimation
     mu = 5e-3
     q = 10
     kappa = 1e-10
+    d = 32*32*3
 
-    if mod == 'CIFAR10':
-        d = 32*32*3
-        delta_adv = np.zeros((1,d))
-        transform = transforms.Compose(
-        [transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    delta_adv = np.zeros((1,d))
+    transform = transforms.Compose(
+    [transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-        path = './datasets/'
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    path = './datasets/'
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-        trainData = torchvision.datasets.CIFAR10(path, train=True, transform=transform, download=True)
-    
-    elif mod == 'MNIST':
-        d = 28*28
-        delta_adv = np.zeros((1,d))
-        transform = torchvision.transforms.Compose([torchvision.transforms.ToTensor(),
-                                                    torchvision.transforms.Normalize(mean=[0.5], std=[0.5])])
-        path = './datasets/'
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        trainData = torchvision.datasets.MNIST(path, train=True, transform=transform, download=True)
+    trainData = torchvision.datasets.CIFAR10(path, train=True, transform=transform, download=True)
 
     trainDataLoader = torch.utils.data.DataLoader(dataset=trainData, batch_size=1)
     for cur_id, (trainImgs, labels) in enumerate(trainDataLoader):
@@ -96,32 +86,31 @@ def calculate_similarity(mod='CIFAR10', img_id=0):
             break
     
     const = 0.1
-    # model = torch.load('cifar_model.pth') if mod == 'CIFAR10' else torch.load('mnist_model.pth')
-    model = torch.load('resnet18.pth') if mod == 'CIFAR10' else torch.load('mnist_model.pth')
+    # model = torch.load('resnet18.pth')
     model = model.to(device)
     
     grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)  # (1, 3072)
     # grad_est_result = np.roll(grad_est_result, 1024)
     # grad_est_result = np.reshape(grad_est_result, (1, 3, 32, 32))
-    grad_by_torch = torchgrad(mod, img_id).cpu().numpy()  # (1, 3, 32, 32)
-    grad_auto = np.reshape(grad_by_torch, (1, 3072)) if mod == 'CIFAR10' else np.reshape(grad_by_torch, (1, 784))
+    # grad_by_torch = torchgrad(mod, img_id).cpu().numpy()  # (1, 3, 32, 32)
+    # grad_auto = np.reshape(grad_by_torch, (1, 3072)) if mod == 'CIFAR10' else np.reshape(grad_by_torch, (1, 784))
     # grad_auto = np.roll(grad_auto, -1024)
 
     # Lp_Norm_2 Normalization
     grad_est_result = grad_est_result/np.linalg.norm(grad_est_result, 2)
-    grad_auto = grad_auto/np.linalg.norm(grad_auto, 2)
-    similarity = np.vdot(grad_est_result, grad_auto)
-    sim_calculator = torch.nn.CosineSimilarity(dim=1, eps=1e-8)
-    sim = sim_calculator(torch.tensor(grad_est_result), torch.tensor(grad_auto))
+    # grad_auto = grad_auto/np.linalg.norm(grad_auto, 2)
+    # similarity = np.vdot(grad_est_result, grad_auto)
+    # sim_calculator = torch.nn.CosineSimilarity(dim=1, eps=1e-8)
+    # sim = sim_calculator(torch.tensor(grad_est_result), torch.tensor(grad_auto))
     # print(grad_est_result.shape, grad_auto.shape)
-    print('----------------------------------------------------------------------------------------')
-    print('Model:', mod)
-    print('cosine_similarity:', similarity)
-    print('torch sim:', sim)
+    # print('----------------------------------------------------------------------------------------')
+    # print('Model:', mod)
+    # print('cosine_similarity:', similarity)
+    # print('torch sim:', sim)
     # np.savetxt('grad_est.txt', grad_est_result)
     # np.savetxt('grad_auto.txt', grad_auto)
 
     return grad_est_result
 
 if __name__ == '__main__':
-    calculate_similarity('CIFAR10', 0)
+    est_grad(img_id=0)
