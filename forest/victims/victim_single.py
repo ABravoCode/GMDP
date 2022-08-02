@@ -122,7 +122,7 @@ class _VictimSingle(_VictimBase):
             loss = self.criterion(self.model(images), labels)
         else:
             loss = criterion(self.model(images), labels)
-        gradients = grad_est.est_grad(kettle.target_ids)
+        gradients = grad_est.est_grad(model, kettle.target_ids)
         grad_norm = 0
         for grad in gradients:
             grad_norm += grad.detach().pow(2).sum()
