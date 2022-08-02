@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from forest.data import kettle
 
-from ...mygrad import grad_est
+from .mygrad import grad_est
 
 from ..utils import set_random_seed
 from ..consts import BENCHMARK
