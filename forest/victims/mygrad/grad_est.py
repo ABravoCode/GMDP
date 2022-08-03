@@ -6,11 +6,11 @@ import torchvision.transforms as transforms
 import random
 import numpy as np
 
-from init_cifar import CIFAR_Net
-from init_mnist import MNIST_Net
-from init_resnet import ResNet18
-from init_resnet import BasicBlock
-from get_autograd_in_model import torchgrad
+from .init_cifar import CIFAR_Net
+from .init_mnist import MNIST_Net
+from .init_resnet import ResNet18
+from .init_resnet import BasicBlock
+from .get_autograd_in_model import torchgrad
 
 
 SEED = 1037

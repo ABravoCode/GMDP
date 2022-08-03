@@ -7,7 +7,6 @@ import datetime
 import time
 
 import forest
-import mygrad
 
 torch.backends.cudnn.benchmark = forest.consts.BENCHMARK
 torch.multiprocessing.set_sharing_strategy(forest.consts.SHARING_STRATEGY)

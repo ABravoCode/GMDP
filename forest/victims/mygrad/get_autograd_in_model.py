@@ -3,8 +3,8 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 
-from init_cifar import CIFAR_Net
-from init_mnist import MNIST_Net
+from .init_cifar import CIFAR_Net
+from .init_mnist import MNIST_Net
 
 path = './datasets'
 BATCH_SIZE = 1
