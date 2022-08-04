@@ -1,9 +1,7 @@
 """Main class, holding information about models and training/testing routines."""
 
 import torch
-
-from forest.victims import mygrad
-from forest.victims.mygrad import grad_est
+import numpy as np
 from ..consts import BENCHMARK
 from ..utils import cw_loss
 torch.backends.cudnn.benchmark = BENCHMARK
@@ -35,6 +33,7 @@ class WitchGradientMatching(_Witch):
 
             # ******************** Revise gradient ********************
             poison_grad = torch.autograd.grad(poison_loss, model.parameters(), retain_graph=True, create_graph=True)
+            print(poison_grad)
 
             passenger_loss = self._passenger_loss(poison_grad, target_grad, target_clean_grad, target_gnorm)
             if self.args.centreg != 0:
