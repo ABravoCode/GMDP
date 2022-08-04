@@ -91,13 +91,14 @@ def est_grad(model, img_id=0):
     
     grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)  # (1, 3072)
     # grad_est_result = np.roll(grad_est_result, 1024)
-    # grad_est_result = np.reshape(grad_est_result, (1, 3, 32, 32))
+    grad_est_result = np.reshape(grad_est_result, (1, 3, 32, 32))
     # grad_by_torch = torchgrad(mod, img_id).cpu().numpy()  # (1, 3, 32, 32)
     # grad_auto = np.reshape(grad_by_torch, (1, 3072)) if mod == 'CIFAR10' else np.reshape(grad_by_torch, (1, 784))
     # grad_auto = np.roll(grad_auto, -1024)
 
     # Lp_Norm_2 Normalization
-    grad_est_result = grad_est_result/np.linalg.norm(grad_est_result, 2)
+    # grad_est_result = grad_est_result/np.linalg.norm(grad_est_result, 2)
+
     # grad_auto = grad_auto/np.linalg.norm(grad_auto, 2)
     # similarity = np.vdot(grad_est_result, grad_auto)
     # sim_calculator = torch.nn.CosineSimilarity(dim=1, eps=1e-8)

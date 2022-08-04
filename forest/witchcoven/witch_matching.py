@@ -1,6 +1,9 @@
 """Main class, holding information about models and training/testing routines."""
 
 import torch
+
+from forest.victims import mygrad
+from forest.victims.mygrad import grad_est
 from ..consts import BENCHMARK
 from ..utils import cw_loss
 torch.backends.cudnn.benchmark = BENCHMARK

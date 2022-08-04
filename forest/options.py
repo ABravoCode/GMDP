@@ -56,14 +56,8 @@ def options():
     ###########################################################################
 
     # Poison brewing:
-    """
-    A: 攻击时采用的优化器
-    注意!在未来的工作中此处应改为ZO-AdaMM
-    阅读代码时请除功能外尤其注意attackoptim的通信机制与接口
-    """
-    #T: 采用signAdam作为攻击方式
+    # A: 攻击时采用的优化器
     parser.add_argument('--attackoptim', default='signAdam', type=str)
-    #T: 攻击次数为250次（？）
     parser.add_argument('--attackiter', default=250, type=int)
     #T: 初始化采用随机初始化
     parser.add_argument('--init', default='randn', type=str)  # randn / rand
@@ -92,8 +86,7 @@ def options():
     parser.add_argument('--max_epoch', default=None, type=int, help='Train only up to this epoch before poisoning.')
 
     # Use only a subset of the dataset:
-    # A: 用多少数据
-    #T: 用1%包含毒物的数据作为验证集<A:消融实验不是验证,GOOGLE一下>
+    #T: 用1%包含毒物的数据作为验证集>
     parser.add_argument('--ablation', default=1.0, type=float,
                         help='What percent of data (including poisons) to use for validation')
 
@@ -109,7 +102,7 @@ def options():
     parser.add_argument('--repel', default=0, type=float)
 
     # Specific Options for a metalearning recipe
-    # A: Metapoison参数，**第二项**可能与ZO-AdaMM会有关系
+    # A: Metapoison参数
     parser.add_argument('--nadapt', default=2, type=int, help='Meta unrolling steps')
     parser.add_argument('--clean_grad', action='store_true', help='Compute the first-order poison gradient.')
 
