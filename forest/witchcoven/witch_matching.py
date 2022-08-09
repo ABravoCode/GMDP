@@ -6,6 +6,8 @@ from ..consts import BENCHMARK
 from ..utils import cw_loss
 torch.backends.cudnn.benchmark = BENCHMARK
 
+from ..victims.mygrad.grad_est import poison_est
+
 from .witch_base import _Witch
 
 class WitchGradientMatching(_Witch):
@@ -32,8 +34,9 @@ class WitchGradientMatching(_Witch):
             prediction = (outputs.data.argmax(dim=1) == labels).sum()
 
             # ******************** Revise gradient ********************
-            poison_grad = torch.autograd.grad(poison_loss, model.parameters(), retain_graph=True, create_graph=True)
-            print(poison_grad)
+            # poison_grad = torch.autograd.grad(poison_loss, model.parameters(), retain_graph=True, create_graph=True)
+            poison_grad = poison_est(model, inputs, labels)
+            # print(poison_grad)
 
             passenger_loss = self._passenger_loss(poison_grad, target_grad, target_clean_grad, target_gnorm)
             if self.args.centreg != 0:

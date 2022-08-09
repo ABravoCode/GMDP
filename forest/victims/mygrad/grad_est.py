@@ -91,7 +91,7 @@ def est_grad(model, img_id=0):
     
     grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)  # (1, 3072)
     # grad_est_result = np.roll(grad_est_result, 1024)
-    grad_est_result = np.reshape(grad_est_result, (1, 3, 32, 32))
+    # grad_est_result = np.reshape(grad_est_result, (1, 3, 32, 32))
     # grad_by_torch = torchgrad(mod, img_id).cpu().numpy()  # (1, 3, 32, 32)
     # grad_auto = np.reshape(grad_by_torch, (1, 3072)) if mod == 'CIFAR10' else np.reshape(grad_by_torch, (1, 784))
     # grad_auto = np.roll(grad_auto, -1024)
@@ -113,5 +113,28 @@ def est_grad(model, img_id=0):
 
     return grad_est_result
 
-if __name__ == '__main__':
-    est_grad(img_id=0)
+def poison_est(model, poison_img, tgt_label):
+    mu = 5e-3
+    q = 10
+    kappa = 1e-10
+    d = 32*32*3
+
+    delta_adv = np.zeros((1,d))
+    transform = transforms.Compose(
+    [transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+    orig_poison = poison_img
+    x = torch.tensor(np.clip(poison_img.resize(1, d).cpu().numpy()+delta_adv, -0.5, 0.5))
+    target_label = tgt_label
+
+    const = 0.1
+    # model = torch.load('resnet18.pth')
+    model = model.to(device)
+    
+    poison_grad_est = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_poison)
+
+    return poison_grad_est
+    
