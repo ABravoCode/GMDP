@@ -39,6 +39,7 @@ class WitchGradientMatching(_Witch):
             # print(poison_grad)
 
             passenger_loss = self._passenger_loss(poison_grad, target_grad, target_clean_grad, target_gnorm)
+            passenger_loss.requires_grad_(True)
             if self.args.centreg != 0:
                 passenger_loss = passenger_loss + self.args.centreg * poison_loss
             passenger_loss.backward(retain_graph=self.retain)

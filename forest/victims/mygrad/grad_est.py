@@ -136,5 +136,5 @@ def poison_est(model, poison_img, tgt_label):
     
     poison_grad_est = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_poison)
 
-    return poison_grad_est
+    return torch.tensor(poison_grad_est)
     
