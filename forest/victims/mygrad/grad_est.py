@@ -127,7 +127,7 @@ def poison_est(model, poison_img, tgt_label):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     orig_poison = poison_img
-    x = torch.tensor(np.clip(poison_img.resize(1, d).cpu().numpy()+delta_adv, -0.5, 0.5))
+    x = torch.tensor(np.clip(poison_img.resize(1, d).cpu().detach().numpy()+delta_adv, -0.5, 0.5))
     target_label = tgt_label
 
     const = 0.1
