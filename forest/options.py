@@ -15,14 +15,12 @@ def options():
     ###########################################################################
     # Central:
     # A: 网络结构选择，可用列表输入
-    #T: （貌似只是设定？不是选择？）
     parser.add_argument('--net', default='ResNet18', type=lambda s: [str(item) for item in s.split(',')])
     # A: 只支持choices里等各种数据集
     #T：与论文一致，默认数据集为CIFAR10
     parser.add_argument('--dataset', default='CIFAR10', type=str,
                         choices=['CIFAR10', 'CIFAR100', 'ImageNet', 'ImageNet1k', 'MNIST', 'TinyImageNet'])
     # A: 不同投毒方式，metapoison的方式自己看
-    #T: 投毒方式，默认为WB（到时候要改？）
     parser.add_argument('--recipe', default='gradient-matching', type=str,
                         choices=['gradient-matching', 'gradient-matching-private',
                                  'watermarking', 'poison-frogs', 'metapoison', 'bullseye'])
