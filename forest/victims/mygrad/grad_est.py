@@ -43,10 +43,11 @@ def function_evaluation_cons(x, kappa, target_label, const, model, orig_img):
     img_vec = x.clone()
     img = np.resize(img_vec, orig_img.shape)
     orig_prob, orig_class = model_prediction(model, img)
-    tmp = orig_prob.clone().detach().cpu().numpy()
+    tmp = orig_prob.clone()
     tmp[0, target_label] = 0
+    tmp = tmp.detach().cpu().numpy()
     # Loss1 = const * np.max([np.log(orig_prob[0, target_label].detach().cpu().numpy() + 1e-10) - np.log(np.amax(tmp) + 1e-10), -kappa])
-    Loss1 = const * np.max([np.log(np.amax(tmp) + 1e-10) - np.log(orig_prob[0, target_label].detach().cpu().numpy() + 1e-10), -kappa])
+    Loss1 = const * np.max([(np.log(np.max(tmp) + 1e-10) - np.log(orig_prob[0, target_label].detach().cpu().numpy() + 1e-10)).all(), -kappa])
     Loss2 = np.linalg.norm(img - orig_img.detach().cpu().numpy()) ** 2 ### squared norm
     return Loss1 + Loss2, Loss2
 
@@ -118,7 +119,7 @@ def poison_est(model, poison_img, tgt_label):
     mu = 5e-3
     q = 10
     kappa = 1e-10
-    d = 32*32*3
+    d = 100*32*32*3
 
     delta_adv = np.zeros((1,d))
     transform = transforms.Compose(

@@ -38,3 +38,46 @@ WB与ZO实验复现
 梯度估计模块搭建与嵌入
 
 单毒物生成运行流程
+
+
+
+## 草稿纸/随记
+
+由budget参数影响的毒物数量会直接影响投毒训练的acc，poisonloader中的size被这样定义：
+
+```python
+validated_batch_size = max(min(args.pbatch, len(self.poisonset)), 1)
+```
+
+而poisonset由函数*_choose_poisons_deterministic*定义，选取前n个类型中的图像作为毒物。
+
+```python
+self.poisonset, self.targetset, self.validset = self._choose_poisons_deterministic(target_id)
+
+def _choose_poisons_deterministic(self, target_id):
+        # poisons
+        class_ids = []
+        for index in range(len(self.trainset)):  # we actually iterate this way not to iterate over the images
+            target, idx = self.trainset.get_target(index)
+            if target == self.poison_setup['poison_class']:
+                class_ids.append(idx)
+
+        poison_num = int(np.ceil(self.args.budget * len(self.trainset)))
+        if len(class_ids) < poison_num:
+            warnings.warn(f'Training set is too small for requested poison budget.')
+            poison_num = len(class_ids)
+        self.poison_ids = class_ids[:poison_num]
+```
+
+遇到规模不匹配问题，使用以下代码解决：
+
+```python
+elif self.args.loss == 'cosine1':
+                orig_target_grad = []
+                for _ in range(500):
+                    orig_target_grad.append(target_grad.unsqueeze_(0))
+                target_grad = torch.cat(orig_target_grad, dim=0).flatten()
+                # print(target_grad.shape)
+                passenger_loss -= torch.nn.functional.cosine_similarity((target_grad[i]).flatten(), poison_grad[i].flatten(), dim=0)
+```
+

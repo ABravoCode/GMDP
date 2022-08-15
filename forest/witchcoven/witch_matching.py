@@ -65,7 +65,12 @@ class WitchGradientMatching(_Witch):
             if self.args.loss in ['scalar_product', *SIM_TYPE]:
                 passenger_loss -= (target_grad[i] * poison_grad[i]).sum()
             elif self.args.loss == 'cosine1':
-                passenger_loss -= torch.nn.functional.cosine_similarity(target_grad[i].flatten(), poison_grad[i].flatten(), dim=0)
+                orig_target_grad = []
+                for _ in range(500):
+                    orig_target_grad.append(target_grad.unsqueeze_(0))
+                target_grad = torch.cat(orig_target_grad, dim=0).flatten()
+                # print(target_grad.shape)
+                passenger_loss -= torch.nn.functional.cosine_similarity((target_grad[i]).flatten(), poison_grad[i].flatten(), dim=0)
             elif self.args.loss == 'SE':
                 passenger_loss += 0.5 * (target_grad[i] - poison_grad[i]).pow(2).sum()
             elif self.args.loss == 'MSE':
