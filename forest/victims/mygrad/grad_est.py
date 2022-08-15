@@ -118,7 +118,7 @@ def poison_est(model, poison_img, tgt_label):
     mu = 5e-3
     q = 10
     kappa = 1e-10
-    d = 500*32*32*3
+    d = 32*32*3
 
     delta_adv = np.zeros((1,d))
     transform = transforms.Compose(

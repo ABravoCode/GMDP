@@ -101,8 +101,8 @@ class _VictimSingle(_VictimBase):
         """Reset scheduler object to initial state."""
         _, _, self.optimizer, self.scheduler = self._initialize_model()
 
-    # ************** Revise gradient **************
-    ''' 
+    # ************** Revise gradient ************** 
+    '''
     def gradient(self, images, labels, criterion=None):
         """Compute the gradient of criterion(model) w.r.t to given data."""
         if criterion is None:
@@ -116,12 +116,8 @@ class _VictimSingle(_VictimBase):
         grad_norm = grad_norm.sqrt()
         return gradients, grad_norm
     '''
-    def gradient(self, model, images, labels, criterion=None):
-        """Compute the gradient of criterion(model) w.r.t to given data."""
-        if criterion is None:
-            loss = self.criterion(self.model(images), labels)
-        else:
-            loss = criterion(self.model(images), labels)
+
+    def gradient(self, model):
         # gradients = grad_est.est_grad(model, kettle.target_ids)
         gradients = torch.tensor(grad_est.est_grad(model, 13902))
         grad_norm = 0
