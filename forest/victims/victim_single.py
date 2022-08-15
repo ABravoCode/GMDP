@@ -117,9 +117,9 @@ class _VictimSingle(_VictimBase):
         return gradients, grad_norm
     '''
 
-    def gradient(self, model):
+    def gradient(self, kettle, model):
         # gradients = grad_est.est_grad(model, kettle.target_ids)
-        gradients = torch.tensor(grad_est.est_grad(model, 13902))
+        gradients = torch.tensor(grad_est.est_grad(model, kettle.target_ids))
         grad_norm = 0
         for grad in gradients:
             grad_norm += grad.detach().pow(2).sum()

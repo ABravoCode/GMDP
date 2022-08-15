@@ -6,6 +6,8 @@ from ..consts import BENCHMARK
 from ..utils import cw_loss
 torch.backends.cudnn.benchmark = BENCHMARK
 
+from forest.data import kettle
+
 from ..victims.mygrad.grad_est import poison_est
 
 from .witch_base import _Witch
