@@ -20,11 +20,11 @@ np.random.seed(SEED)
 random.seed(SEED)
 torch.backends.cudnn.deterministic = True
 
-LABEL = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+LABEL = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
 def gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img):
     sigma = 100
-    f_0, ignore =function_evaluation_cons(x,kappa,target_label,const,model,orig_img)
+    f_0, ignore = function_evaluation_cons(x,kappa,target_label,const,model,orig_img)
 
     grad_est=0
     for i in range(q):
@@ -33,7 +33,7 @@ def gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img):
         u_norm = np.linalg.norm(u)
         u = u/u_norm
         f_tmp, ignore = function_evaluation_cons(x+mu*u,kappa,target_label,const,model,orig_img)
-        grad_est=grad_est+ (d/q)*u*(f_tmp-f_0)/mu
+        grad_est = grad_est+ (d/q)*u*(f_tmp-f_0)/mu
     return grad_est
 
 
@@ -91,10 +91,12 @@ def est_grad(model, img_id):
     # model = torch.load('resnet18.pth')
     model = model.to(device)
     
-    grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)  # (1, 3072)
+    # grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)  # (1, 3072)
+
     # grad_est_result = np.roll(grad_est_result, 1024)
     # grad_est_result = np.reshape(grad_est_result, (1, 3, 32, 32))
     # grad_by_torch = torchgrad(mod, img_id).cpu().numpy()  # (1, 3, 32, 32)
+    grad_est_result = torchgrad(orig_img, target_label).cpu().numpy()
     # grad_auto = np.reshape(grad_by_torch, (1, 3072)) if mod == 'CIFAR10' else np.reshape(grad_by_torch, (1, 784))
     # grad_auto = np.roll(grad_auto, -1024)
 
@@ -119,7 +121,7 @@ def poison_est(model, poison_img, tgt_label):
     mu = 5e-3
     q = 10
     kappa = 1e-10
-    d = 100*32*32*3
+    d = 512*32*32*3
 
     delta_adv = np.zeros((1,d))
     transform = transforms.Compose(

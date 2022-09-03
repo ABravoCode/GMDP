@@ -13,7 +13,7 @@ from ..consts import BENCHMARK
 torch.backends.cudnn.benchmark = BENCHMARK
 
 from .victim_base import _VictimBase
-
+from .models import resnet_picker, ResNet
 
 class _VictimSingle(_VictimBase):
     """Implement model-specific code and behavior for a single model on a single GPU.
@@ -83,8 +83,7 @@ class _VictimSingle(_VictimBase):
             self.model.to(**self.setup)
             if torch.cuda.device_count() > 1:
                 self.model = torch.nn.DataParallel(self.model)
-        return stats
-
+        return stat
     """ Various Utilities."""
 
     def eval(self, dropout=False):
@@ -118,7 +117,6 @@ class _VictimSingle(_VictimBase):
     '''
 
     def gradient(self, kettle, model):
-        # gradients = grad_est.est_grad(model, kettle.target_ids)
         gradients = torch.tensor(grad_est.est_grad(model, kettle.target_ids))
         grad_norm = 0
         for grad in gradients:
@@ -133,3 +131,10 @@ class _VictimSingle(_VictimBase):
         Function has arguments: model, criterion
         """
         return function(self.model, self.criterion, self.optimizer, *args)
+
+    def _forward_impl(self, x):
+        # See note [TorchScript super()]
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") 
+        temp = resnet_picker(self.args.net[0], self.args.dataset).to(device)
+        x = ResNet._forward_impl(temp, x)
+        return x
