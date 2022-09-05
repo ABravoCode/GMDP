@@ -1,4 +1,3 @@
-from operator import mod
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -13,7 +12,7 @@ from .init_resnet import BasicBlock
 from .get_autograd_in_model import torchgrad
 
 
-SEED = 1037
+SEED = 43
 torch.manual_seed(SEED)
 torch.cuda.manual_seed_all(SEED)
 np.random.seed(SEED)
@@ -23,7 +22,7 @@ torch.backends.cudnn.deterministic = True
 LABEL = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
 def gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img):
-    sigma = 100
+    sigma = 10
     f_0, ignore = function_evaluation_cons(x,kappa,target_label,const,model,orig_img)
 
     grad_est=0
@@ -46,8 +45,8 @@ def function_evaluation_cons(x, kappa, target_label, const, model, orig_img):
     tmp = orig_prob.clone()
     tmp[0, target_label] = 0
     tmp = tmp.detach().cpu().numpy()
-    # Loss1 = const * np.max([np.log(orig_prob[0, target_label].detach().cpu().numpy() + 1e-10) - np.log(np.amax(tmp) + 1e-10), -kappa])
-    Loss1 = const * np.max([(np.log(np.max(tmp) + 1e-10) - np.log(orig_prob[0, target_label].detach().cpu().numpy() + 1e-10)).all(), -kappa])
+    # Loss1 = const * np.max([np.log(orig_prob[0, target_label].detach().cpu().numpy() + 1e-8) - np.log(np.amax(tmp) + 1e-8), -kappa])
+    Loss1 = const * np.max([(np.log(np.max(tmp) + 1e-8) - np.log(orig_prob[0, target_label].detach().cpu().numpy() + 1e-8)).all(), -kappa])
     Loss2 = np.linalg.norm(img - orig_img.detach().cpu().numpy()) ** 2 ### squared norm
     return Loss1 + Loss2, Loss2
 
@@ -62,7 +61,7 @@ def model_prediction(model, inputs):
 def est_grad(model, img_id):
     # config for gradient estimation
     mu = 5e-3
-    q = 10
+    q = 32
     kappa = 1e-10
     d = 32*32*3
 
@@ -91,12 +90,15 @@ def est_grad(model, img_id):
     # model = torch.load('resnet18.pth')
     model = model.to(device)
     
-    # grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)  # (1, 3072)
+    # -----------------------choose one--------------------------------
+    grad_est_result = torchgrad(orig_img, target_label).cpu().numpy()
+    # grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)
+    # -----------------------------------------------------------------
 
     # grad_est_result = np.roll(grad_est_result, 1024)
     # grad_est_result = np.reshape(grad_est_result, (1, 3, 32, 32))
     # grad_by_torch = torchgrad(mod, img_id).cpu().numpy()  # (1, 3, 32, 32)
-    grad_est_result = torchgrad(orig_img, target_label).cpu().numpy()
+    
     # grad_auto = np.reshape(grad_by_torch, (1, 3072)) if mod == 'CIFAR10' else np.reshape(grad_by_torch, (1, 784))
     # grad_auto = np.roll(grad_auto, -1024)
 
@@ -117,11 +119,12 @@ def est_grad(model, img_id):
 
     return grad_est_result
 
+
 def poison_est(model, poison_img, tgt_label):
     mu = 5e-3
-    q = 10
+    q = 32
     kappa = 1e-10
-    d = 512*32*32*3
+    d = 500*32*32*3
 
     delta_adv = np.zeros((1,d))
     transform = transforms.Compose(
@@ -135,10 +138,35 @@ def poison_est(model, poison_img, tgt_label):
     target_label = tgt_label
 
     const = 0.1
-    # model = torch.load('resnet18.pth')
     model = model.to(device)
     
     poison_grad_est = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_poison)
 
     return torch.tensor(poison_grad_est)
+
+
+'''
+def poison_est(model, poison_img, tgt_label):
+    d = 32*32*3
+    poison_group = np.array_split(poison_img, d)
+    print(len(poison_group))
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+    delta_adv = np.zeros((1,d))
+    target_label = tgt_label[0] 
+    model = model.to(device)
+
+    result = []
+    for poison in poison_group:
+        print(poison.shape)
+        # x = torch.tensor(np.clip(orig_poison.resize(1, d).detach().cpu().numpy()+delta_adv, -0.5, 0.5))
+        x = torch.tensor(np.clip(poison.detach().cpu().numpy(), -0.5, 0.5))
+        const = 0.1
+        print(target_label)
+        one_result = torchgrad(poison, target_label).cpu().numpy()
+        result.append(one_result)
+    result = np.array(result)
     
+    return result
+'''

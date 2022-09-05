@@ -135,6 +135,7 @@ class _VictimSingle(_VictimBase):
     def _forward_impl(self, x):
         # See note [TorchScript super()]
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") 
-        temp = resnet_picker(self.args.net[0], self.args.dataset).to(device)
-        x = ResNet._forward_impl(temp, x)
+        # temp = resnet_picker(self.args.net[0], self.args.dataset).to(device)
+        # x = ResNet._forward_impl(temp, x)
+        x = ResNet._forward_impl(self.model, x)
         return x

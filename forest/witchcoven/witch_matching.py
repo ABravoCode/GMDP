@@ -36,8 +36,11 @@ class WitchGradientMatching(_Witch):
             prediction = (outputs.data.argmax(dim=1) == labels).sum()
 
             # ******************** Revise gradient ********************
-            # poison_grad = torch.autograd.grad(poison_loss, model.parameters(), retain_graph=True, create_graph=True)
-            poison_grad = poison_est(model, inputs, labels) # budget*len(dataset)*3072
+            poison_grad = torch.autograd.grad(poison_loss, model.parameters(), retain_graph=True, create_graph=True)
+            
+            poison_grad = torch.tensor(poison_grad)
+            target_grad = torch.tensor(target_grad)
+            # poison_grad = poison_est(model, inputs, labels) # budget*len(dataset)*3072
             passenger_loss = self._passenger_loss(poison_grad, target_grad, target_clean_grad, target_gnorm)
             passenger_loss.requires_grad_(True)
             if self.args.centreg != 0:
