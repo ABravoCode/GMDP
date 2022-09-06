@@ -91,9 +91,13 @@ def est_grad(model, img_id):
     model = model.to(device)
     
     # -----------------------choose one--------------------------------
-    grad_est_result = torchgrad(orig_img, target_label).cpu().numpy()
-    # grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)
+    # grad_est_result = torchgrad(orig_img, target_label).cpu().numpy()
+    grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)
     # -----------------------------------------------------------------
+
+    #--------------------------------use autograd--------------------------------
+    # grad_est_result = torch.autograd.grad(loss, model.parameters(), retain_graph=True, create_graph=True)
+    # ----------------------------------------------------------------
 
     # grad_est_result = np.roll(grad_est_result, 1024)
     # grad_est_result = np.reshape(grad_est_result, (1, 3, 32, 32))
