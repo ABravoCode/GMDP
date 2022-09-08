@@ -101,7 +101,7 @@ class _VictimSingle(_VictimBase):
         _, _, self.optimizer, self.scheduler = self._initialize_model()
 
     # ************** Revise gradient ************** 
-    '''
+    
     def gradient(self, images, labels, criterion=None):
         """Compute the gradient of criterion(model) w.r.t to given data."""
         if criterion is None:
@@ -114,8 +114,9 @@ class _VictimSingle(_VictimBase):
             grad_norm += grad.detach().pow(2).sum()
         grad_norm = grad_norm.sqrt()
         return gradients, grad_norm
-    '''
+    
 
+    '''
     def gradient(self, kettle, model):
         gradients = torch.tensor(grad_est.est_grad(model, kettle.target_ids))
         grad_norm = 0
@@ -123,7 +124,7 @@ class _VictimSingle(_VictimBase):
             grad_norm += grad.detach().pow(2).sum()
         grad_norm = grad_norm.sqrt()
         return gradients, grad_norm
-        
+    '''    
 
     def compute(self, function, *args):
         r"""Compute function on the given optimization problem, defined by criterion \circ model.

@@ -91,8 +91,8 @@ def est_grad(model, img_id):
     model = model.to(device)
     
     # -----------------------choose one--------------------------------
-    # grad_est_result = torchgrad(orig_img, target_label).cpu().numpy()
-    grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)
+    grad_est_result = torchgrad(orig_img, target_label).cpu().numpy()
+    # grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)
     # -----------------------------------------------------------------
 
     #--------------------------------use autograd--------------------------------

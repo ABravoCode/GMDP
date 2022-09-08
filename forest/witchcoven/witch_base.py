@@ -99,7 +99,9 @@ class _Witch():
         # A: validiation loss
         # --------------------Revised--------------------
         elif self.args.target_criterion in ['xent', 'cross-entropy']:
-            self.target_grad, self.target_gnorm = victim.gradient(kettle, victim.model)
+            # self.target_grad, self.target_gnorm = victim.gradient(kettle, victim.model)
+            self.target_grad, self.target_gnorm = victim.gradient(self.targets, self.intended_classes)
+
         # --------------------Revised--------------------
         else:
             raise ValueError('Invalid target criterion chosen ...')

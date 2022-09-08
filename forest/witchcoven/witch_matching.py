@@ -36,11 +36,11 @@ class WitchGradientMatching(_Witch):
             prediction = (outputs.data.argmax(dim=1) == labels).sum()
 
             # ******************** Revise gradient ********************
-            # poison_grad = torch.autograd.grad(poison_loss, model.parameters(), retain_graph=True, create_graph=True)
+            poison_grad = torch.autograd.grad(poison_loss, model.parameters(), retain_graph=True, create_graph=True)
             # print(poison_grad)
             # poison_grad = torch.tensor(poison_grad[0]).detach().cpu()
-            target_grad = target_grad.clone()
-            poison_grad = poison_est(model, inputs, labels) # budget*len(dataset)*3072
+            # poison_grad = torch.tensor(poison_grad).detach().cpu()
+            # poison_grad = poison_est(model, inputs, labels) # budget*len(dataset)*3072
             passenger_loss = self._passenger_loss(poison_grad, target_grad, target_clean_grad, target_gnorm)
             passenger_loss.requires_grad_(True)
             if self.args.centreg != 0:
@@ -66,7 +66,8 @@ class WitchGradientMatching(_Witch):
 
         for i in indices:
             if self.args.loss in ['scalar_product', *SIM_TYPE]:
-                passenger_loss -= (target_grad[i] * poison_grad[i]).sum()
+                # passenger_loss -= (target_grad[i] * poison_grad[i]).sum()
+                passenger_loss -= (target_grad[i].flatten() * poison_grad[i].flatten()).sum()
             elif self.args.loss == 'cosine1':
                 orig_target_grad = []
                 for _ in range(500):
