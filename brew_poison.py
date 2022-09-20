@@ -44,7 +44,7 @@ if __name__ == "__main__":
         # A: ./forest/victims/victim_base.py -> def train... ->victim_single.py -> def iterate...
         stats_clean = model.train(data, max_epoch=args.max_epoch)
     train_time = time.time()
-    torch.save(model, './{}_{}_{}_clean_model.pth'.format(args.dataset, args.net, args.optimization))
+    torch.save(model.state_dict(), './{}_{}_{}_clean_model.pth'.format(args.dataset, args.net, args.optimization))
 
     # T:获取投毒攻击
     poison_delta = witch.brew(model, data)
@@ -71,7 +71,7 @@ if __name__ == "__main__":
             stats_results = None
     test_time = time.time()
 
-    torch.save(model, './{}_{}_{}_poisoned_model.pth'.format(args.dataset, args.net, args.optimization))
+    torch.save(model.state_dict(), './{}_{}_{}_poisoned_model.pth'.format(args.dataset, args.net, args.optimization))
 
     # A: 时间戳保存并展示
     timestamps = dict(train_time=str(datetime.timedelta(seconds=train_time - start_time)).replace(',', ''),

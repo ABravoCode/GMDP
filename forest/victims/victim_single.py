@@ -15,12 +15,14 @@ torch.backends.cudnn.benchmark = BENCHMARK
 from .victim_base import _VictimBase
 from .models import resnet_picker, ResNet
 
-class _VictimSingle(_VictimBase):
+class _VictimSingle(_VictimBase, torch.nn.Module):
     """Implement model-specific code and behavior for a single model on a single GPU.
 
     This is the simplest victim implementation.
 
     """
+    def __setitem__(self, k, v):
+                self.k = v
 
     """ Methods to initialize a model."""
 

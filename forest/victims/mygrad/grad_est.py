@@ -91,8 +91,8 @@ def est_grad(model, img_id):
     model = model.to(device)
     
     # -----------------------choose one--------------------------------
-    grad_est_result = torchgrad(orig_img, target_label).cpu().numpy()
-    # grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)
+    # grad_est_result = torchgrad(orig_img, target_label).cpu().numpy()
+    grad_est_result = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_img)
     # -----------------------------------------------------------------
 
     #--------------------------------use autograd--------------------------------
@@ -149,28 +149,3 @@ def poison_est(model, poison_img, tgt_label):
     return torch.tensor(poison_grad_est)
 
 
-'''
-def poison_est(model, poison_img, tgt_label):
-    d = 32*32*3
-    poison_group = np.array_split(poison_img, d)
-    print(len(poison_group))
-
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-    delta_adv = np.zeros((1,d))
-    target_label = tgt_label[0] 
-    model = model.to(device)
-
-    result = []
-    for poison in poison_group:
-        print(poison.shape)
-        # x = torch.tensor(np.clip(orig_poison.resize(1, d).detach().cpu().numpy()+delta_adv, -0.5, 0.5))
-        x = torch.tensor(np.clip(poison.detach().cpu().numpy(), -0.5, 0.5))
-        const = 0.1
-        print(target_label)
-        one_result = torchgrad(poison, target_label).cpu().numpy()
-        result.append(one_result)
-    result = np.array(result)
-    
-    return result
-'''

@@ -40,6 +40,7 @@ class _VictimBase:
 
     def __init__(self, args, setup=dict(device=torch.device('cpu'), dtype=torch.float)):
         """Initialize empty victim."""
+        super(_VictimBase, self).__init__()
         self.args, self.setup = args, setup
         # A: 容错, 集成模型与参数必须对应
         if self.args.ensemble < len(self.args.net):
