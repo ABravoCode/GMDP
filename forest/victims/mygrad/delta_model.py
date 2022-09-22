@@ -1,15 +1,14 @@
 import torch
 import numpy as np
 
-from forest.victims.victim_single import _VictimSingle
-import forest
+# from forest.victims.victim_single import _VictimSingle
+# import forest
 
-sigma = 0.1
-args = forest.options().parse_args()
+# args = forest.options().parse_args()
 
-if __name__ == '__main__':
+def delta_model(path, args, sigma=0.1):
 	orig_net = _VictimSingle(args)
-	orig_net.load_state_dict(torch.load(r"CIFAR10_['ResNet18']_conservative_clean_model.pth", map_location=torch.device('cpu')))
+	orig_net.load_state_dict(torch.load(path))
 	d = 0
 	j = 0
 	all_param = []
@@ -41,15 +40,17 @@ if __name__ == '__main__':
 		param.data = torch.tensor(temp)
 
 	net = _VictimSingle(args)
-	net.load_state_dict(torch.load(r"CIFAR10_['ResNet18']_conservative_clean_model.pth", map_location=torch.device('cpu')))
+	net.load_state_dict(torch.load(path))
 
 	for index, name in enumerate(all_name):
 		net[name] = all_param[index-1]
 
-	torch.save(orig_net.state_dict(), r"delta_CIFAR10_['ResNet18']_conservative_clean_model.pth")
+	torch.save(orig_net.state_dict(), path)
 	
 	# for name, param in orig_net.named_parameters():
 	# 	print(param)
 
 	new_net = _VictimSingle(args)
-	new_net.load_state_dict(torch.load(r"delta_CIFAR10_['ResNet18']_conservative_clean_model.pth", map_location=torch.device('cpu')))
+	new_net.load_state_dict(torch.load(r"delta"+path))
+
+	return torch.load(r"delta"+path), delta
