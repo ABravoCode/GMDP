@@ -9,6 +9,7 @@ from .utils import print_and_save_stats, pgd_step
 from ..consts import NON_BLOCKING, BENCHMARK, DEBUG_TRAINING
 torch.backends.cudnn.benchmark = BENCHMARK
 
+device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
 
 def get_optimizers(model, args, defs):
     """Construct optimizer as given in defs."""
@@ -100,6 +101,7 @@ def run_step(kettle, poison_delta, loss_fn, epoch, stats, model, defs, criterion
                               eps=kettle.args.eps, tau=kettle.args.tau)
 
         # Get loss
+        model = model.to(device)
         outputs = model(inputs)
         loss = loss_fn(model, outputs, labels)
         if DEBUG_TRAINING:

@@ -7,6 +7,7 @@ import datetime
 import time
 
 import forest
+from forest.victims.victim_single import _VictimSingle
 
 torch.backends.cudnn.benchmark = forest.consts.BENCHMARK
 torch.multiprocessing.set_sharing_strategy(forest.consts.SHARING_STRATEGY)
@@ -36,10 +37,13 @@ if __name__ == "__main__":
     if args.pretrained:
         print('Loading pretrained model...')
         stats_clean = None
+        
         if os.path.exists('./{}_{}_{}_clean_model.pth'.format(args.dataset, args.net, args.optimization)):
-            model = torch.load('./{}_{}_{}_clean_model.pth'.format(args.dataset, args.net, args.optimization))
+            model = _VictimSingle(args)
+            model.load_state_dict(torch.load('./{}_{}_{}_clean_model.pth'.format(args.dataset, args.net, args.optimization)))
         else:
             raise OSError('Model do not exist')
+
     else:
         # A: ./forest/victims/victim_base.py -> def train... ->victim_single.py -> def iterate...
         stats_clean = model.train(data, max_epoch=args.max_epoch)

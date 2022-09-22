@@ -5,12 +5,17 @@ import torchvision.transforms as transforms
 import random
 import numpy as np
 
+from forest.victims.mygrad.delta_model import delta_model
+import forest
+
 from .init_cifar import CIFAR_Net
 from .init_mnist import MNIST_Net
 from .init_resnet import ResNet18
 from .init_resnet import BasicBlock
 from .get_autograd_in_model import torchgrad
+from .delta_model import delta_model as dmod
 
+# args = forest.options().parse_args()
 
 SEED = 43
 torch.manual_seed(SEED)
@@ -58,6 +63,75 @@ def model_prediction(model, inputs):
     return prob, predicted_class
 
 
+def est_grad(model, img_id):
+    # config for gradient estimation
+    mu = 5e-3
+    q = 10
+    kappa = 1e-10
+    d = 32*32*3
+
+    delta_adv = np.zeros((1,d))
+    transform = transforms.Compose(
+    [transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+    path = './datasets/'
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+    trainData = torchvision.datasets.CIFAR10(path, train=True, transform=transform, download=True)
+
+    trainDataLoader = torch.utils.data.DataLoader(dataset=trainData, batch_size=1)
+    for cur_id, (trainImgs, labels) in enumerate(trainDataLoader):
+        if cur_id == img_id:
+            trainImgs = trainImgs.to(device)
+            labels = labels.to(device)
+            orig_img = trainImgs
+            x = torch.tensor(np.clip(trainImgs.resize(1, d).cpu().numpy()+delta_adv, -0.5, 0.5))
+            # target_label = LABEL[int(labels[0])]
+            target_label = labels
+            break
+    
+    const = 0.1
+    # model = torch.load('resnet18.pth')
+    model = model.to(device)
+    
+    d_mod, u = dmod(r"/home/mist/cloud/gmdp/CIFAR10_['ResNet18']_conservative_clean_model.pth", args)
+    d_mod.to(device)
+    u_norm = np.linalg.norm(u)
+    u = u/u_norm
+    
+    f_0, ignore = function_evaluation_cons(x,kappa,target_label,const,model,orig_img)
+    f_tmp, ignore = function_evaluation_cons(x,kappa,target_label,const,d_mod,orig_img)
+    grad_est = u*(f_tmp-f_0)
+
+    return grad_est
+
+
+def poison_est(model, poison_img, tgt_label):
+    mu = 5e-3
+    q = 32
+    kappa = 1e-10
+    d = 500*32*32*3
+
+    delta_adv = np.zeros((1,d))
+    transform = transforms.Compose(
+    [transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+    orig_poison = poison_img
+    x = torch.tensor(np.clip(poison_img.resize(1, d).cpu().detach().numpy()+delta_adv, -0.5, 0.5))
+    target_label = tgt_label
+
+    const = 0.1
+    model = model.to(device)
+    
+    poison_grad_est = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_poison)
+
+    return torch.tensor(poison_grad_est)
+
+'''
 def est_grad(model, img_id):
     # config for gradient estimation
     mu = 5e-3
@@ -122,30 +196,4 @@ def est_grad(model, img_id):
     # np.savetxt('grad_auto.txt', grad_auto)
 
     return grad_est_result
-
-
-def poison_est(model, poison_img, tgt_label):
-    mu = 5e-3
-    q = 32
-    kappa = 1e-10
-    d = 500*32*32*3
-
-    delta_adv = np.zeros((1,d))
-    transform = transforms.Compose(
-    [transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-    orig_poison = poison_img
-    x = torch.tensor(np.clip(poison_img.resize(1, d).cpu().detach().numpy()+delta_adv, -0.5, 0.5))
-    target_label = tgt_label
-
-    const = 0.1
-    model = model.to(device)
-    
-    poison_grad_est = gradient_estimation_v2(mu,q,x,d,kappa,target_label,const,model,orig_poison)
-
-    return torch.tensor(poison_grad_est)
-
-
+'''

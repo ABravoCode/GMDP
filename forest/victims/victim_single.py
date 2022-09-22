@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from forest.data import kettle
 
-from .mygrad import *
+from .mygrad import grad_est, get_autograd_in_model
 
 from ..utils import set_random_seed
 from ..consts import BENCHMARK
@@ -14,6 +14,8 @@ torch.backends.cudnn.benchmark = BENCHMARK
 
 from .victim_base import _VictimBase
 from .models import resnet_picker, ResNet
+
+device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
 
 class _VictimSingle(_VictimBase, torch.nn.Module):
     """Implement model-specific code and behavior for a single model on a single GPU.
@@ -106,6 +108,7 @@ class _VictimSingle(_VictimBase, torch.nn.Module):
     
     def gradient(self, images, labels, criterion=None):
         """Compute the gradient of criterion(model) w.r.t to given data."""
+        self.model = self.model.to(device)
         if criterion is None:
             loss = self.criterion(self.model(images), labels)
         else:
