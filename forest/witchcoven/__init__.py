@@ -7,7 +7,7 @@ from .witch_bullseye import WitchBullsEye
 
 import torch
 
-""" T：根据输入来选择攻击方式 """
+""" T: 根据输入来选择攻击方式 """
 def Witch(args, setup=dict(device=torch.device('cpu'), dtype=torch.float)):
     """Implement Main interface."""
     if args.recipe == 'gradient-matching':
