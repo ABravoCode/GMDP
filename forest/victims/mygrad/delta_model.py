@@ -6,7 +6,7 @@ import numpy as np
 
 # args = forest.options().parse_args()
 
-def delta_model(args, path=r"CIFAR10_['ResNet18']_conservative_clean_model.pth", sigma=0.1):
+def delta_model(path, args, sigma=0.1):
 	orig_net = _VictimSingle(args)
 	orig_net.load_state_dict(torch.load(path))
 	d = 0
@@ -45,7 +45,7 @@ def delta_model(args, path=r"CIFAR10_['ResNet18']_conservative_clean_model.pth",
 	for index, name in enumerate(all_name):
 		net[name] = all_param[index-1]
 
-	torch.save(orig_net.state_dict(), r"delta"+path)
+	torch.save(orig_net.state_dict(), path)
 	
 	# for name, param in orig_net.named_parameters():
 	# 	print(param)

@@ -1,4 +1,3 @@
-from pip import main
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -96,7 +95,7 @@ def est_grad(model, img_id):
     # model = torch.load('resnet18.pth')
     model = model.to(device)
     
-    d_mod, u = dmod(args, r"CIFAR10_['ResNet18']_conservative_clean_model.pth")
+    d_mod, u = dmod(r"/home/mist/cloud/gmdp/CIFAR10_['ResNet18']_conservative_clean_model.pth", args)
     d_mod.to(device)
     u_norm = np.linalg.norm(u)
     u = u/u_norm
@@ -198,37 +197,3 @@ def est_grad(model, img_id):
 
     return grad_est_result
 '''
-
-
-if __name__=='__main__':
-    kappa = 1e-10
-    d = 32*32*3
-    delta_adv = np.zeros((1,d))
-
-    intended_id = 1
-    path = './datasets/'
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-    transform = transforms.Compose(
-    [transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-
-    model = torch.load('resnet18.pth')
-    trainData = torchvision.datasets.CIFAR10(path, train=True, transform=transform, download=True)
-    trainDataLoader = torch.utils.data.DataLoader(dataset=trainData, batch_size=1)
-    for cur_id, (trainImgs, labels) in enumerate(trainDataLoader):
-        if cur_id == intended_id:
-            trainImgs = trainImgs.to(device)
-            labels = labels.to(device)
-            orig_img = trainImgs
-            x = torch.tensor(np.clip(trainImgs.resize(1, d).cpu().numpy()+delta_adv, -0.5, 0.5))
-            target_label = labels
-            break
-    
-    logits = model(x)
-    lossF = torch.nn.CrossEntropyLoss()
-    loss = lossF(logits, labels)
-
-    real = np.array(torch.autograd.grad(loss, model.parameters(), only_inputs=True)).flatten()
-    estimated = est_grad(model, intended_id).flatten()
-    sim = torch.nn.CosineSimilarity(real, estimatedt)
