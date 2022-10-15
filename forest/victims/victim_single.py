@@ -87,7 +87,7 @@ class _VictimSingle(_VictimBase, torch.nn.Module):
             self.model.to(**self.setup)
             if torch.cuda.device_count() > 1:
                 self.model = torch.nn.DataParallel(self.model)
-        return stats
+        return stat
     """ Various Utilities."""
 
     def eval(self, dropout=False):
